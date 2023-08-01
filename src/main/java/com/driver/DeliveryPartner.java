@@ -10,7 +10,7 @@ public class DeliveryPartner {
         this.numberOfOrders = 0;
     }
 
-    public String getPartnerId() {
+    public String getId() {
         return partnerId;
     }
 
