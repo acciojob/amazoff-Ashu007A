@@ -10,7 +10,7 @@ public class Order {
         this.deliveryTime = convertDeliveryTimeToMinutes(deliveryTime);
     }
 
-    public String getId() {
+    public String getOrderId() {
         return orderId;
     }
 
