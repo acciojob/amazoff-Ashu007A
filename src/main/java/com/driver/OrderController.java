@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,14 +71,18 @@ public class OrderController {
     }
 
     @GetMapping("/get-orders-by-partner-id/{partnerId}")
-    public ResponseEntity<List<Order>> getOrdersByPartnerId(@PathVariable String partnerId) {
-        List<Order> orders = orderService.getOrdersByPartnerId(partnerId);
+    public ResponseEntity<List<String>> getOrdersByPartnerId(@PathVariable String partnerId) {
+        List<String> orders = orderService.getOrdersByPartnerId(partnerId).stream()
+                .map(Order::getId)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/get-all-orders")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
+    public ResponseEntity<List<String>> getAllOrders() {
+        List<String> orders = orderService.getAllOrders().stream()
+                .map(Order::getId)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
