@@ -20,7 +20,7 @@ public class OrderController {
 
     @PostMapping("/add-order")
     public ResponseEntity<String> addOrder(@RequestBody Order order) {
-        orderMap.put(order.getOrderId(), order);
+        orderMap.put(order.getId(), order);
         return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
     }
 
@@ -82,7 +82,7 @@ public class OrderController {
     public ResponseEntity<Integer> getCountOfUnassignedOrders() {
         int count = 0;
         for (Order order : orderMap.values()) {
-            if (!orderPartnerMap.containsKey(order.getOrderId())) {
+            if (!orderPartnerMap.containsKey(order.getId())) {
                 count++;
             }
         }

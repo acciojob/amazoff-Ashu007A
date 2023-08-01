@@ -1,3 +1,4 @@
+// Order.java
 package com.driver;
 
 public class Order {
@@ -10,7 +11,7 @@ public class Order {
         this.deliveryTime = convertDeliveryTimeToMinutes(deliveryTime);
     }
 
-    public String getOrderId() {
+    public String getId() {
         return orderId;
     }
 
