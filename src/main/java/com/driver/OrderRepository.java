@@ -75,7 +75,7 @@ public class OrderRepository {
         int count = 0;
         for (Order order : orders.values()) {
             if (order.getId() != null && order.getId().equals(partnerId) &&
-                    order.getDeliveryTimeMinutes() > deliveryTimeMinutes) {
+                    order.getDeliveryTime() > deliveryTimeMinutes) {
                 count++;
             }
         }
@@ -86,8 +86,8 @@ public class OrderRepository {
         int maxDeliveryTime = -1;
         for (Order order : orders.values()) {
             if (order.getId() != null && order.getId().equals(partnerId) &&
-                    order.getDeliveryTimeMinutes() > maxDeliveryTime) {
-                maxDeliveryTime = order.getDeliveryTimeMinutes();
+                    order.getDeliveryTime() > maxDeliveryTime) {
+                maxDeliveryTime = order.getDeliveryTime();
             }
         }
         return convertMinutesToTime(maxDeliveryTime);

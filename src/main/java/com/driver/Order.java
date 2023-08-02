@@ -21,7 +21,7 @@ public class Order {
         return id;
     }
 
-    public int getDeliveryTimeMinutes() {
+    public int getDeliveryTime() {
         return deliveryTimeMinutes;
     }
 
