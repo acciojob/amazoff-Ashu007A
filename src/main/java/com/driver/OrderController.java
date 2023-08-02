@@ -1,14 +1,18 @@
 package com.driver;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @RestController
 @RequestMapping("/orders")
@@ -17,6 +21,8 @@ public class OrderController {
     private final Map<String, Order> orderMap = new HashMap<>();
     private final Map<String, DeliveryPartner> partnerMap = new HashMap<>();
     private final Map<String, String> orderPartnerMap = new HashMap<>();
+    private ConcurrentMap<String, Order> orders = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, DeliveryPartner> partners = new ConcurrentHashMap<>();
 
     @PostMapping("/add-order")
     public ResponseEntity<String> addOrder(@RequestBody Order order) {
@@ -89,19 +95,39 @@ public class OrderController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
-    @GetMapping("/get-count-of-orders-left-after-given-time/{partnerId}")
-    public ResponseEntity<Integer> getOrdersLeftAfterGivenTimeByPartnerId(@PathVariable String partnerId, @RequestParam String time) {
-        int targetTime = convertDeliveryTimeToMinutes(time);
-        int count = 0;
-        for (Map.Entry<String, String> entry : orderPartnerMap.entrySet()) {
-            if (entry.getValue().equals(partnerId)) {
-                Order order = orderMap.get(entry.getKey());
-                if (order.getDeliveryTime() > targetTime) {
-                    count++;
-                }
+//    @GetMapping("/get-count-of-orders-left-after-given-time/{partnerId}")
+//    public ResponseEntity<Integer> getOrdersLeftAfterGivenTimeByPartnerId(@PathVariable String partnerId, @RequestParam String time) {
+//        int targetTime = convertDeliveryTimeToMinutes(time);
+//        int count = 0;
+//        for (Map.Entry<String, String> entry : orderPartnerMap.entrySet()) {
+//            if (entry.getValue().equals(partnerId)) {
+//                Order order = orderMap.get(entry.getKey());
+//                if (order.getDeliveryTime() > targetTime) {
+//                    count++;
+//                }
+//            }
+//        }
+//        return new ResponseEntity<>(count, HttpStatus.OK);
+//    }
+
+    @GetMapping("/get-count-of-orders-left-after-given-time/{time}/{partnerId}")
+    public ResponseEntity<Integer> getCountOfOrdersLeftAfterGivenTimeByPartnerId(
+            @PathVariable @DateTimeFormat(pattern = "HH:mm") LocalTime time,
+            @PathVariable String partnerId) {
+
+        DeliveryPartner partner = partners.get(partnerId);
+        if (partner == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        int countOfOrders = 0;
+        for (Order order : orders.values()) {
+            if (order.getDeliveryTime().isAfter(time) && order.getAssignedPartnerId().equals(partnerId)) {
+                countOfOrders++;
             }
         }
-        return new ResponseEntity<>(count, HttpStatus.OK);
+
+        return new ResponseEntity<>(countOfOrders, HttpStatus.OK);
     }
 
     @GetMapping("/get-last-delivery-time/{partnerId}")
