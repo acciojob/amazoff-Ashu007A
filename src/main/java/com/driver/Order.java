@@ -1,28 +1,31 @@
-// Order.java
 package com.driver;
 
 public class Order {
 
-    private String orderId;
-    private int deliveryTime;
+    private String id;
+    private int deliveryTimeMinutes;
 
-    public Order(String orderId, String deliveryTime) {
-        this.orderId = orderId;
-        this.deliveryTime = convertDeliveryTimeToMinutes(deliveryTime);
+    public Order(String id, String deliveryTime) {
+        this.id = id;
+        this.deliveryTimeMinutes = convertToMinutes(deliveryTime);
+    }
+
+    private int convertToMinutes(String deliveryTime) {
+        String[] parts = deliveryTime.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
     }
 
     public String getId() {
-        return orderId;
+        return id;
     }
 
-    public int getDeliveryTime() {
-        return deliveryTime;
+    public int getDeliveryTimeMinutes() {
+        return deliveryTimeMinutes;
     }
 
-    private int convertDeliveryTimeToMinutes(String deliveryTime) {
-        String[] timeParts = deliveryTime.split(":");
-        int hours = Integer.parseInt(timeParts[0]);
-        int minutes = Integer.parseInt(timeParts[1]);
-        return hours * 60 + minutes;
+    public void setId(String id) {
+        this.id = id;
     }
 }
